@@ -1,57 +1,90 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { background: #080808; font-family: 'Helvetica Neue', Helvetica, sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
-.header { padding: 32px 40px 20px; border-bottom: 1px solid #161616; flex-shrink: 0; }
+
+.header { padding: 24px 20px 16px; border-bottom: 1px solid #161616; flex-shrink: 0; }
 .eyebrow { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #383838; margin-bottom: 6px; }
-.title { font-size: 24px; font-weight: 300; color: #d8d8d8; letter-spacing: -0.02em; }
+.title { font-size: 20px; font-weight: 300; color: #d8d8d8; letter-spacing: -0.02em; }
 .title em { font-style: normal; color: #7b5ea7; font-weight: 500; }
 .subtitle { font-size: 12px; color: #444; margin-top: 5px; line-height: 1.5; }
-.layout { display: flex; flex: 1; min-height: 600px; }
-.sidebar { width: 190px; flex-shrink: 0; border-right: 1px solid #161616; padding: 20px 0; overflow-y: auto; }
-.cluster-group { margin-bottom: 20px; }
-.cluster-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.14em; color: #2a2a2a; padding: 0 16px 8px; }
-.cluster-btns { display: flex; flex-direction: column; }
-.stage-btn { background: none; border: none; border-left: 2px solid transparent; padding: 8px 16px; font-size: 12px; color: #3a3a3a; cursor: pointer; text-align: left; transition: all 0.15s; }
-.stage-btn:hover { color: #666; background: #0f0f0f; }
-.stage-btn.active { color: #c4a0e8; border-left-color: #7b5ea7; background: #0f0f0f; }
-.main { flex: 1; display: flex; min-width: 0; }
-.image-frame { flex: 0 0 auto; width: 480px; position: relative; padding: 24px; border-right: 1px solid #161616; }
-.image-frame > .panel > img { width: 100%; border-radius: 3px; display: block; }
-.dual-image { display: flex; gap: 12px; }
+
+/* Mobile: stacked layout */
+.layout { display: flex; flex-direction: column; flex: 1; }
+
+/* Horizontal scrolling tab nav for mobile */
+.sidebar { display: flex; flex-direction: row; overflow-x: auto; border-bottom: 1px solid #161616; padding: 0; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.sidebar::-webkit-scrollbar { display: none; }
+.cluster-group { display: flex; flex-direction: row; align-items: stretch; flex-shrink: 0; }
+.cluster-label { display: none; }
+.cluster-btns { display: flex; flex-direction: row; }
+.cluster-group:not(:last-child)::after { content: ''; display: block; width: 1px; background: #1e1e1e; margin: 8px 0; }
+
+.stage-btn { background: none; border: none; border-bottom: 2px solid transparent; padding: 12px 14px; font-size: 11px; color: #3a3a3a; cursor: pointer; text-align: center; transition: all 0.15s; white-space: nowrap; flex-shrink: 0; }
+.stage-btn:hover { color: #666; }
+.stage-btn.active { color: #c4a0e8; border-bottom-color: #7b5ea7; }
+
+.main { display: flex; flex-direction: column; flex: 1; }
+
+.image-frame { position: relative; padding: 16px; border-bottom: 1px solid #161616; }
+.image-frame > .panel > img { width: 100%; border-radius: 3px; display: block; max-height: 70vw; object-fit: contain; }
+.dual-image { display: flex; gap: 10px; }
 .img-wrap { flex: 1; min-width: 0; }
 .img-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: #2a2a2a; margin-bottom: 6px; }
 .img-wrap img { width: 100%; border-radius: 3px; display: block; }
-.stage-badge { position: absolute; top: 36px; left: 36px; padding: 3px 8px; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 2px; font-weight: 500; }
+
+.stage-badge { position: absolute; top: 28px; left: 28px; padding: 3px 8px; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 2px; font-weight: 500; }
 .badge-original { background: rgba(60,60,60,0.4); color: #555; border: 1px solid #2a2a2a; }
 .badge-hair-length { background: rgba(123,94,167,0.12); color: #7b5ea7; border: 1px solid rgba(123,94,167,0.25); }
 .badge-aura-style { background: rgba(30,100,160,0.12); color: #4a8ab5; border: 1px solid rgba(74,138,181,0.25); }
 .badge-eye-style { background: rgba(160,50,50,0.12); color: #b54a4a; border: 1px solid rgba(181,74,74,0.25); }
-.info-panel { flex: 1; padding: 24px 32px; overflow-y: auto; min-width: 0; }
+
+.info-panel { padding: 20px; }
 .cluster-tag { display: inline-block; font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em; padding: 3px 8px; border-radius: 2px; margin-bottom: 10px; font-weight: 500; }
 .tag-original { background: #161616; color: #444; }
 .tag-hair-length { background: rgba(123,94,167,0.12); color: #7b5ea7; }
 .tag-aura-style { background: rgba(30,100,160,0.12); color: #4a8ab5; }
 .tag-eye-style { background: rgba(160,50,50,0.12); color: #b54a4a; }
-.stage-name { font-size: 20px; font-weight: 300; color: #d0d0d0; letter-spacing: -0.01em; margin-bottom: 4px; }
-.divider { height: 1px; background: #161616; margin: 20px 0; }
+.stage-name { font-size: 18px; font-weight: 300; color: #d0d0d0; letter-spacing: -0.01em; margin-bottom: 4px; }
+.divider { height: 1px; background: #161616; margin: 16px 0; }
 .prompt-box { background: #0e0e0e; border: 1px solid #1a1a1a; border-radius: 3px; padding: 14px; }
 .prompt-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em; color: #2a2a2a; margin-bottom: 8px; }
 .prompt-text { font-size: 12px; color: #484848; line-height: 1.7; font-family: 'Courier New', monospace; }
 .portrait-note { margin-top: 16px; font-size: 11px; color: #2e2e2e; line-height: 1.5; border-left: 2px solid #1a1a1a; padding-left: 12px; }
-.footer { padding: 12px 40px; border-top: 1px solid #161616; font-size: 10px; color: #222; letter-spacing: 0.06em; flex-shrink: 0; }
+
+.footer { padding: 12px 20px; border-top: 1px solid #161616; font-size: 10px; color: #222; letter-spacing: 0.06em; flex-shrink: 0; }
 .footer span { color: #2e2e2e; }
+
 .panel { display: none; }
 .panel.active { display: block; }
+
+/* Desktop: restore sidebar layout */
+@media (min-width: 700px) {
+  .layout { flex-direction: row; min-height: 0; }
+  .sidebar { flex-direction: column; width: 190px; flex-shrink: 0; border-right: 1px solid #161616; border-bottom: none; padding: 20px 0; overflow-x: hidden; overflow-y: auto; }
+  .cluster-group { flex-direction: column; }
+  .cluster-group:not(:last-child)::after { display: none; }
+  .cluster-label { display: block; font-size: 9px; text-transform: uppercase; letter-spacing: 0.14em; color: #2a2a2a; padding: 0 16px 8px; }
+  .cluster-btns { flex-direction: column; }
+  .stage-btn { border-bottom: none; border-left: 2px solid transparent; padding: 8px 16px; text-align: left; }
+  .stage-btn.active { border-bottom: none; border-left-color: #7b5ea7; background: #0f0f0f; }
+  .main { flex-direction: row; flex: 1; min-width: 0; }
+  .image-frame { padding: 24px; border-bottom: none; border-right: 1px solid #161616; width: 420px; flex-shrink: 0; }
+  .image-frame > .panel > img { max-height: none; }
+  .info-panel { padding: 24px 32px; overflow-y: auto; min-width: 0; }
+  .header { padding: 32px 40px 20px; }
+  .footer { padding: 12px 40px; }
+}
 </style>
 </head>
 <body>
 <div class="header">
   <div class="eyebrow">FLUX.1 Pro · Black Forest Labs API · Character Ideation Demo</div>
   <div class="title">Super Saiyan <em>Black Hole</em> — Design Sprint</div>
-  <div class="subtitle">13 variants across 4 clusters. Same pose, same gi, same background. One variable per cluster. Eye variants include portrait crop to show detail at scale.</div>
+  <div class="subtitle">13 variants across 4 clusters. Same pose, same gi, same background. One variable per cluster.</div>
 </div>
 <div class="layout">
   <div class="sidebar"><div class="cluster-group"><div class="cluster-label">Original</div><div class="cluster-btns"><button class="stage-btn active" onclick="show('base',this)">Base Form</button><button class="stage-btn" onclick="show('ss1',this)">Super Saiyan 1</button><button class="stage-btn" onclick="show('ss3',this)">Super Saiyan 3</button></div></div><div class="cluster-group"><div class="cluster-label">Hair Length</div><div class="cluster-btns"><button class="stage-btn" onclick="show('hair_short',this)">Short Hair</button><button class="stage-btn" onclick="show('hair_medium',this)">Medium Hair</button><button class="stage-btn" onclick="show('hair_long',this)">Long Hair</button></div></div><div class="cluster-group"><div class="cluster-label">Aura Style</div><div class="cluster-btns"><button class="stage-btn" onclick="show('aura_void',this)">Void Aura</button><button class="stage-btn" onclick="show('aura_lightning',this)">Dark Lightning</button><button class="stage-btn" onclick="show('aura_smoke',this)">Smoke Aura</button><button class="stage-btn" onclick="show('aura_singularity',this)">Singularity</button></div></div><div class="cluster-group"><div class="cluster-label">Eye Style</div><div class="cluster-btns"><button class="stage-btn" onclick="show('eyes_white',this)">White Eyes</button><button class="stage-btn" onclick="show('eyes_black',this)">Black Eyes</button><button class="stage-btn" onclick="show('eyes_red',this)">Red on Black</button></div></div></div>
